@@ -2,12 +2,12 @@
 
 var React = require('react-native');
 var tweenState = require('react-tween-state');
-
 var {
   StyleSheet,
   TouchableHighlight,
   View,
-  Text
+  Text,
+  Platform,
 } = React;
 
 var Accordion = React.createClass({
@@ -21,6 +21,7 @@ var Accordion = React.createClass({
     header: React.PropTypes.element.isRequired,
     onPress: React.PropTypes.func,
     underlayColor: React.PropTypes.string,
+    contentHeight: React.PropTypes.number,
     style: React.PropTypes.object
   },
 
@@ -38,7 +39,7 @@ var Accordion = React.createClass({
     return {
       is_visible: false,
       height: 0,
-      content_height: 0
+      content_height: 1
     };
   },
 
@@ -70,9 +71,15 @@ var Accordion = React.createClass({
 
   _getContentHeight() {
     if (this.refs.AccordionContent) {
-      this.refs.AccordionContent.measure((ox, oy, width, height, px, py) => {
+      this.refs.AccordionContent.measure((ox, oy, width, height) => {
         // Sets content height in state
-        this.setState({content_height: height});
+        var h = height;
+        if (Platform.OS == 'android') {
+          h = this.props.contentHeight;
+        }
+
+        this.setState({content_height: h});
+
       });
     }
   },
@@ -106,7 +113,7 @@ var Accordion = React.createClass({
             height: this.getTweeningValue('height')
           }}
         >
-          <View ref="AccordionContent">
+          <View ref="AccordionContent" style={{height: 1}}>
             {this.props.content}
           </View>
         </View>
