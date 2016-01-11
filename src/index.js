@@ -85,6 +85,8 @@ var Accordion = React.createClass({
   },
 
   componentDidMount() {
+
+
     // Gets content height when component mounts
     // without setTimeout, measure returns 0 for every value.
     // See https://github.com/facebook/react-native/issues/953
@@ -92,6 +94,12 @@ var Accordion = React.createClass({
   },
 
   render() {
+    var heightBug = {};
+
+    if (Platform.OS == 'android') {
+      var heightBug = { height: 1 };
+    }
+
     return (
       /*jshint ignore:start */
       <View
@@ -113,7 +121,10 @@ var Accordion = React.createClass({
             height: this.getTweeningValue('height')
           }}
         >
-          <View ref="AccordionContent" style={{height: 1}}>
+
+
+
+          <View ref="AccordionContent" style={heightBug}>
             {this.props.content}
           </View>
         </View>
